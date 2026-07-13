@@ -72,3 +72,71 @@ npm install
 ### Environment variables
 
 Create a `.env` file in the project root:
+Get a free key by signing up at [finnhub.io](https://finnhub.io/register) — the free tier covers this project's needs. If no key is set, the app falls back to simulated market data automatically.
+
+### Run locally
+
+```bash
+npm run dev
+```
+
+Then open the local URL shown in your terminal (usually `http://localhost:5173`).
+
+### Build for production
+
+```bash
+npm run build
+```
+
+Output is generated in the `dist/` folder.
+
+---
+
+## Deployment (Vercel)
+
+**Via dashboard:**
+1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+2. **Add New → Project** → select this repository
+3. Vercel auto-detects the Vite build settings
+4. Add `VITE_FINNHUB_API_KEY` under Environment Variables
+5. Deploy
+
+**Via CLI:**
+```bash
+npm install -g vercel
+vercel
+```
+
+Every push to `main` will auto-redeploy once the GitHub repo is linked.
+
+---
+
+## Project structure
+incognito/
+├── src/
+│   ├── components/     # UI components (sheets, cards, nav, etc.)
+│   ├── hooks/           # Custom hooks (market data polling, storage, etc.)
+│   ├── utils/            # Formatting, theme tokens, constants
+│   └── App.jsx           # Main app entry
+├── public/
+├── .env                 # Local environment variables (not committed)
+├── vite.config.js
+└── package.json
+
+---
+
+## Limitations
+
+This is a portfolio/demo project, not a production banking app. It intentionally does not include:
+- Real money movement or bank account connections
+- Identity verification (KYC) or regulatory compliance
+- Server-side authentication or a real database
+- Real card issuance
+
+All balances, transactions, and card details are generated client-side for demonstration purposes.
+
+---
+
+## Author
+
+Built by [Moses Ipoba](https://github.com/mosesipoba212) — [LinkedIn](https://linkedin.com/in/mosesipoba)
