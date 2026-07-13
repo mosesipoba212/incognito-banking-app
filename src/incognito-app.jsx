@@ -220,9 +220,15 @@ function Dashboard({ user, onLogout }) {
 
   const [liveQuotes, setLiveQuotes] = useState({});
   const [quotesLoading, setQuotesLoading] = useState(true);
+  const [liveDataUnavailable, setLiveDataUnavailable] = useState(false);
+  // Only poll while the Invest tab is actually open, and only while the
+  // browser tab is visible, so a backgrounded app doesn't burn through the
+  // free-tier rate limit for a screen nobody is looking at.
   useEffect(() => {
+    if (tab !== "invest") return;
     let cancelled = false;
     async function refreshQuotes() {
+      if (document.visibilityState !== "visible") return;
       const results = await Promise.allSettled(
         STOCK_UNIVERSE.map(async (s) => {
           const finnhubSymbol = FINNHUB_SYMBOL_MAP[s.symbol];
@@ -235,35 +241,48 @@ function Dashboard({ user, onLogout }) {
       for (const r of results) {
         if (r.status === "fulfilled" && r.value[1]) next[r.value[0]] = r.value[1];
       }
-      if (Object.keys(next).length > 0) setLiveQuotes(next);
+      if (Object.keys(next).length > 0) {
+        setLiveQuotes(next);
+        setLiveDataUnavailable(false);
+      } else {
+        setLiveDataUnavailable(true);
+      }
       setQuotesLoading(false);
     }
     refreshQuotes();
     // Quotes are cached for 30s in lib/market.js, so this interval is cheap:
     // it only ever produces a genuine network round-trip once the cache
     // for a given symbol has actually gone stale.
-    const interval = setInterval(refreshQuotes, 45_000);
+    const interval = setInterval(refreshQuotes, 20_000);
+    document.addEventListener("visibilitychange", refreshQuotes);
     return () => {
       cancelled = true;
       clearInterval(interval);
+      document.removeEventListener("visibilitychange", refreshQuotes);
     };
-  }, []);
+  }, [tab]);
 
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyIsLive, setHistoryIsLive] = useState(false);
   useEffect(() => {
     if (!activeStock) {
       setActiveHistory(null);
       setHistoryLoading(false);
+      setHistoryIsLive(false);
       return;
     }
     setActiveHistory(activeStock.history);
+    setHistoryIsLive(false);
     const finnhubSymbol = FINNHUB_SYMBOL_MAP[activeStock.symbol];
     if (!finnhubSymbol) return;
     let cancelled = false;
     setHistoryLoading(true);
     fetchHistory(finnhubSymbol).then((history) => {
       if (cancelled) return;
-      if (history) setActiveHistory(history);
+      if (history) {
+        setActiveHistory(history);
+        setHistoryIsLive(true);
+      }
       setHistoryLoading(false);
     });
     return () => {
@@ -719,6 +738,7 @@ function Dashboard({ user, onLogout }) {
                 hideBalance={hideBalance}
                 liveQuotes={liveQuotes}
                 quotesLoading={quotesLoading}
+                liveDataUnavailable={liveDataUnavailable}
                 onOpenStock={(s) => {
                   setActiveStock(s);
                   setSheet("stock");
@@ -800,6 +820,7 @@ function Dashboard({ user, onLogout }) {
           activeStock={activeStock}
           activeHistory={activeHistory}
           historyLoading={historyLoading}
+          historyIsLive={historyIsLive}
           portfolio={portfolio}
           investCash={investCash}
           hideBalance={hideBalance}

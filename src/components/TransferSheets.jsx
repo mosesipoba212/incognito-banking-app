@@ -44,6 +44,7 @@ export default function TransferSheets({
   activeStock,
   activeHistory,
   historyLoading,
+  historyIsLive,
   portfolio,
   investCash,
   hideBalance,
@@ -208,6 +209,11 @@ export default function TransferSheets({
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          {!historyLoading && !historyIsLive && (
+            <div style={{ color: theme.textFaint, fontFamily: fonts.body, fontSize: 10.5, marginBottom: 6 }}>
+              Illustrative chart — live price history unavailable
+            </div>
+          )}
           <div style={{ color: theme.textFaint, fontFamily: fonts.body, fontSize: 12, marginBottom: 4 }}>
             You hold {(portfolio[activeStock.symbol] || 0).toFixed(3)} shares · Invest cash {fmtGBP(investCash, hideBalance)}
           </div>

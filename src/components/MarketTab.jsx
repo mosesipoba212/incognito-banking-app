@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Search, Star, TrendingUp, TrendingDown } from "lucide-react";
+import { Search, Star, TrendingUp, TrendingDown, WifiOff } from "lucide-react";
 import { theme, fonts } from "../lib/theme.js";
 import { STOCK_UNIVERSE, CATEGORIES, stocksByCategory, recommendedFor } from "../lib/stocks.js";
 import { fmtGBP } from "../lib/format.js";
@@ -83,6 +83,7 @@ export default function MarketTab({
   hideBalance,
   liveQuotes,
   quotesLoading,
+  liveDataUnavailable,
   onOpenStock,
 }) {
   const [category, setCategory] = useState("All");
@@ -144,12 +145,19 @@ export default function MarketTab({
         </div>
       )}
 
+      {!showInitialLoading && liveDataUnavailable && (
+        <div className="px-5 mt-3 flex items-center gap-1.5" title="Couldn't reach live pricing — showing simulated prices instead">
+          <WifiOff size={12} color={theme.textFaint} />
+          <span style={{ color: theme.textFaint, fontFamily: fonts.body, fontSize: 11.5 }}>Live data unavailable — showing simulated prices</span>
+        </div>
+      )}
+
       {watchlist.length > 0 && (
         <div className="mt-6">
           <div style={{ color: theme.textDim, fontFamily: fonts.body, fontSize: 13, marginBottom: 8 }} className="px-5">
             Your watchlist
           </div>
-          <div className="flex gap-3 overflow-x-auto px-5 pb-1">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar px-5 pb-1">
             {watchlistStocks.map((s) => {
               const positive = s.chg >= 0;
               return (
@@ -193,7 +201,7 @@ export default function MarketTab({
 
       <div className="px-5 mt-6">
         <div style={{ color: theme.textDim, fontFamily: fonts.body, fontSize: 13, marginBottom: 8 }}>Market</div>
-        <div className="flex gap-2 overflow-x-auto pb-1 mb-4">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4">
           {CATEGORIES.map((c) => (
             <button
               key={c}

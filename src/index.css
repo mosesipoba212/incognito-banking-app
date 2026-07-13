@@ -163,6 +163,17 @@ a:focus-visible {
   animation: skeletonPulse 1.4s ease-in-out infinite;
 }
 
+/* Horizontally-scrolling strips (watchlist, category chips, card carousel)
+   keep native touch/drag/trackpad scrolling but hide the browser's own
+   scrollbar/arrow chrome so they read as swipeable rows, not a scroll pane. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

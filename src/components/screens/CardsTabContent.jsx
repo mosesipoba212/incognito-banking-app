@@ -113,7 +113,7 @@ export default function CardsTabContent({ cards, accounts, hideBalance, onAddCar
   return (
     <div className="px-5 mt-4">
       {cards.length > 1 && (
-        <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
+        <div className="flex gap-2 mb-3 overflow-x-auto no-scrollbar pb-1">
           {cards.map((c, i) => (
             <button
               key={c.id}
