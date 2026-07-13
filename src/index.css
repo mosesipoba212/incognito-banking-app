@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+body {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------
+   Global interactive states — applied once here so every button/input/
+   select across the app gets consistent hover, pressed, and keyboard
+   focus feedback without repeating utility classes in every component.
+   --------------------------------------------------------------------- */
+button,
+input,
+select {
+  transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid #c6a06a;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Balance amounts re-mount (via a changing `key`) when the incognito
+   toggle flips, which retriggers this fade so the swap feels intentional
+   rather than an abrupt content jump. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-in {
+  animation: fadeIn 180ms ease;
+}
+
+@keyframes sheetBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes sheetBackdropOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes sheetPanelIn {
+  from {
+    transform: translateY(28px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes sheetPanelOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(28px);
+    opacity: 0;
+  }
+}
+.sheet-backdrop-in {
+  animation: sheetBackdropIn 200ms ease;
+}
+.sheet-backdrop-out {
+  animation: sheetBackdropOut 180ms ease forwards;
+}
+.sheet-panel-in {
+  animation: sheetPanelIn 200ms ease;
+}
+.sheet-panel-out {
+  animation: sheetPanelOut 180ms ease forwards;
+}
+
+@keyframes screenSlideIn {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes screenSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+}
+.screen-in {
+  animation: screenSlideIn 200ms ease;
+}
+.screen-out {
+  animation: screenSlideOut 180ms ease forwards;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tab-fade-in {
+  animation: tabFadeIn 180ms ease;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.skeleton {
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
